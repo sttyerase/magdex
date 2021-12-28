@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/scidex")
+@RequestMapping("/magdex")
 public class ArticleController {
     private ArticleRepository articleRepository;
 
