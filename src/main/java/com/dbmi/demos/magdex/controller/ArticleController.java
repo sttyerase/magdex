@@ -61,8 +61,8 @@ public class ArticleController {
 
     // POST METHODS
     @PostMapping("/articles/new")
-    public Article createArticle(@Valid @RequestBody Article article) {
-        return articleRepository.save(article);
+    public ResponseEntity<Article> createArticle(@Valid @RequestBody Article article) {
+        return new ResponseEntity<Article>(articleRepository.save(article),HttpStatus.OK);
     } // CREATECROP(article)
 
     // PUT METHODS
