@@ -16,7 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/magdex")
 public class ArticleController {
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
     @Autowired
     ArticleController(ArticleRepository aRepo){
@@ -43,7 +43,7 @@ public class ArticleController {
                 articleRepository
                         .findById(articleId)
                         .orElseThrow(() -> new ResourceNotFoundException("Article information not found for id: " + articleId));
-        return new ResponseEntity<Article>(myArticle,HttpStatus.OK);
+        return new ResponseEntity<>(myArticle, HttpStatus.OK);
     } // FINDCROPSBYID(LONG)
 
     @GetMapping("/articles/find/name/{articleTitle}")
@@ -56,13 +56,13 @@ public class ArticleController {
         } else {
             throw new ResourceNotFoundException("Unable to locate article: " + articleTitle);
         } // IF-ELSE
-        return new ResponseEntity<Article>(myArticle,HttpStatus.OK);
+        return new ResponseEntity<>(myArticle, HttpStatus.OK);
     } // FINDCROPSBYID(LONG)
 
     // POST METHODS
     @PostMapping("/articles/new")
     public ResponseEntity<Article> createArticle(@Valid @RequestBody Article article) {
-        return new ResponseEntity<Article>(articleRepository.save(article),HttpStatus.OK);
+        return new ResponseEntity<>(articleRepository.save(article), HttpStatus.OK);
     } // CREATECROP(article)
 
     // PUT METHODS
