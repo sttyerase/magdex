@@ -44,7 +44,7 @@ public class ArticleController {
                         .findById(articleId)
                         .orElseThrow(() -> new ResourceNotFoundException("Article information not found for id: " + articleId));
         return new ResponseEntity<>(myArticle, HttpStatus.OK);
-    } // FINDCROPSBYID(LONG)
+    } // FINDARTICLESBYID(LONG)
 
     @GetMapping("/articles/find/name/{articleTitle}")
     public ResponseEntity<Article> getArticlesByTitle(@PathVariable(value = "articleTitle") String articleTitle)
@@ -57,13 +57,13 @@ public class ArticleController {
             throw new ResourceNotFoundException("Unable to locate article: " + articleTitle);
         } // IF-ELSE
         return new ResponseEntity<>(myArticle, HttpStatus.OK);
-    } // FINDCROPSBYID(LONG)
+    } // FINDARTICLESBYID(LONG)
 
     // POST METHODS
     @PostMapping("/articles/new")
     public ResponseEntity<Article> createArticle(@Valid @RequestBody Article article) {
         return new ResponseEntity<>(articleRepository.save(article), HttpStatus.OK);
-    } // CREATECROP(article)
+    } // CREATEARTICLE(article)
 
     // PUT METHODS
     @PutMapping("/articles/update/{articleId}")
@@ -83,7 +83,7 @@ public class ArticleController {
         article.setArticleYear(articleDetails.getArticleYear());
         final Article updatedArticle = articleRepository.save(article);
         return ResponseEntity.ok(updatedArticle);
-    } // UPDATECROP(@PATHVARIABLE)
+    } // UPDATEARTICLE(@PATHVARIABLE)
 
     // DELETE METHODS
     @DeleteMapping("/articles/delete/{articleId}")
@@ -96,6 +96,6 @@ public class ArticleController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
-    } // DELETECROP(@PATHVARIABLE)
+    } // DELETEARTICLE(@PATHVARIABLE)
 
 } // CLASS
