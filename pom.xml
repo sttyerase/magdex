@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.dbmi</groupId>
-    <artifactId>seeds</artifactId>
+    <artifactId>magdex</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>seeds</name>
-    <description>demonstration project for seed inspection repository</description>
+    <description>demonstration project for a magazine index repository</description>
 
     <properties>
         <java.version>11</java.version>
