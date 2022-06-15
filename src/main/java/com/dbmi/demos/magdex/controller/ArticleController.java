@@ -86,7 +86,7 @@ public class ArticleController {
     } // UPDATEARTICLE(@PATHVARIABLE)
 
     // DELETE METHODS
-    @DeleteMapping("/articles/delete/{articleId}")
+    @DeleteMapping("/articles/delete/id/{articleId}")
     public Map<String, Boolean> deleteArticle(@PathVariable(value = "articleId") Long articleId) throws Exception {
         Article article =
                 articleRepository
