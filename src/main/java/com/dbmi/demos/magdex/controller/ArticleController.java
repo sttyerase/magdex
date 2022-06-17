@@ -46,7 +46,7 @@ public class ArticleController {
         return new ResponseEntity<>(myArticle, HttpStatus.OK);
     } // FINDARTICLESBYID(LONG)
 
-    @GetMapping("/articles/find/name/{articleTitle}")
+    @GetMapping("/articles/find/title/{articleTitle}")
     public ResponseEntity<Article> getArticlesByTitle(@PathVariable(value = "articleTitle") String articleTitle)
             throws ResourceNotFoundException {
         Article myArticle;
