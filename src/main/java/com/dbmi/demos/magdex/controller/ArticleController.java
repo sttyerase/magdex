@@ -29,15 +29,15 @@ public class ArticleController {
     public ResponseEntity<Long> getRowCount() {
         Long tableRows =  articleRepository.count();
         return ResponseEntity.ok(tableRows);
-    } // GETHOME()
+    } // GETROWCOUNT()
 
     @GetMapping("/articles/find/all")
     public Iterable<Article> findAllArticles() {
         return articleRepository.findAll();
-    } // FINDALLarticleS()
+    } // FINDALLARTICLES()
 
     @GetMapping("/articles/find/id/{articleId}")
-    public ResponseEntity<Article> getArticlesById(@PathVariable(value = "articleId") Long articleId)
+    public ResponseEntity<Article> findArticleById(@PathVariable(value = "articleId") Long articleId)
             throws ResourceNotFoundException {
         Article myArticle =
                 articleRepository
@@ -47,7 +47,7 @@ public class ArticleController {
     } // FINDARTICLESBYID(LONG)
 
     @GetMapping("/articles/find/title/{articleTitle}")
-    public ResponseEntity<Article> getArticlesByTitle(@PathVariable(value = "articleTitle") String articleTitle)
+    public ResponseEntity<Article> findArticleByTitle(@PathVariable(value = "articleTitle") String articleTitle) // RETURNS A SINGLE ARTICLE MATCHING TITLE EXACTLY
             throws ResourceNotFoundException {
         Article myArticle;
         Optional<Article> articleOptional = articleRepository.findByArticleTitle(articleTitle);
