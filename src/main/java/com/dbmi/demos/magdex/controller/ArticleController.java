@@ -2,13 +2,18 @@ package com.dbmi.demos.magdex.controller;
 
 import com.dbmi.demos.magdex.model.ArticleRepository;
 import com.dbmi.demos.magdex.model.Article;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,6 +22,7 @@ import java.util.Optional;
 @RequestMapping("/magdex")
 public class ArticleController {
     private final ArticleRepository articleRepository;
+    private final Logger myLogger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     ArticleController(ArticleRepository aRepo){
@@ -57,6 +63,24 @@ public class ArticleController {
             throw new ResourceNotFoundException("Unable to locate article: " + articleTitle);
         } // IF-ELSE
         return new ResponseEntity<>(myArticle, HttpStatus.OK);
+    } // FINDARTICLESBYID(LONG)
+
+    @GetMapping("/articles/find/like")
+    public Iterable<Article> findArticlesLike(@Valid @RequestBody Article exampleArticle) // RETURNS A SINGLE ARTICLE MATCHING TITLE EXACTLY
+            throws ResourceNotFoundException {
+        ExampleMatcher myMatcher = ExampleMatcher.matching()
+                .withIgnoreCase(true)
+                .withIgnorePaths("articleId")
+                .withIgnorePaths("articleMonth")
+                .withIgnorePaths("articleYear")
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Article> myEx = Example.of(exampleArticle, myMatcher);
+        myLogger.debug("EXAMPLE PROBE TYPE: " + myEx.getProbeType());
+        List<Article> articleOptional = articleRepository.findAll(myEx);
+        if(articleOptional.isEmpty()){
+            throw new ResourceNotFoundException("Unable to locate articles: " + myEx.getProbe().getArticleCategory());
+        } // IF
+        return articleOptional;
     } // FINDARTICLESBYID(LONG)
 
     // POST METHODS
