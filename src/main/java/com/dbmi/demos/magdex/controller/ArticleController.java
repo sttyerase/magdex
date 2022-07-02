@@ -2,6 +2,8 @@ package com.dbmi.demos.magdex.controller;
 
 import com.dbmi.demos.magdex.model.ArticleRepository;
 import com.dbmi.demos.magdex.model.Article;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -68,7 +67,14 @@ public class ArticleController {
     @GetMapping("/articles/find/like")
     public Iterable<Article> findArticlesLike(@Valid @RequestBody Article exampleArticle) // RETURNS A SINGLE ARTICLE MATCHING TITLE EXACTLY
             throws ResourceNotFoundException {
-        ExampleMatcher myMatcher = ExampleMatcher.matching()
+        String exampleArticleJSON = "";
+        ObjectMapper mapper = new ObjectMapper();
+                try {
+                    exampleArticleJSON = mapper.writeValueAsString(exampleArticle);
+                } catch (JsonProcessingException jpe) {
+                    jpe.printStackTrace();
+                } // TRY-CATCH
+                ExampleMatcher myMatcher = ExampleMatcher.matching()
                 .withIgnoreCase(true)
                 .withIgnorePaths("articleId")
                 .withIgnorePaths("articleMonth")
@@ -78,7 +84,7 @@ public class ArticleController {
         myLogger.debug("EXAMPLE PROBE TYPE: " + myEx.getProbeType());
         List<Article> articleOptional = articleRepository.findAll(myEx);
         if(articleOptional.isEmpty()){
-            throw new ResourceNotFoundException("Unable to locate articles: " + myEx.getProbe().getArticleCategory());
+            throw new ResourceNotFoundException("Found no matching articles: " + exampleArticleJSON);
         } // IF
         return articleOptional;
     } // FINDARTICLESBYID(LONG)
