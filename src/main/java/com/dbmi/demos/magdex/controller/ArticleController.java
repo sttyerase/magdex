@@ -64,7 +64,8 @@ public class ArticleController {
         return new ResponseEntity<>(myArticle, HttpStatus.OK);
     } // FINDARTICLESBYID(LONG)
 
-    @GetMapping("/articles/find/like")
+      // POST METHODS
+    @PostMapping("/articles/find/like")
     public Iterable<Article> findArticlesLike(@Valid @RequestBody Article exampleArticle) // RETURNS A SINGLE ARTICLE MATCHING TITLE EXACTLY
             throws ResourceNotFoundException {
         String exampleArticleJSON = "";
