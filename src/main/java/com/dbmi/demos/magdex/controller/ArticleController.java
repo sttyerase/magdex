@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.*;
 public class ArticleController {
     private final ArticleRepository articleRepository;
     private final Logger myLogger = LoggerFactory.getLogger(this.getClass());
+    private final Sort yearMonthSort = Sort.by(Sort.Direction.DESC,"articleYear", "articleMonth");  // ESTABLISH DEFAULT SORT AS YEAR and MONTH DESCENDING
 
     @Autowired
     ArticleController(ArticleRepository aRepo){
@@ -37,8 +39,12 @@ public class ArticleController {
     } // GETROWCOUNT()
 
     @GetMapping("/articles/find/all")
-    public Iterable<Article> findAllArticles() {
-        return articleRepository.findAll();
+    public Iterable<Article> findAllArticles(@RequestParam(name = "sort", required = false) String sortParam) {
+        if(sortParam == null || sortParam.isEmpty()) {
+            return articleRepository.findAll(yearMonthSort);
+        } else {
+            return articleRepository.findAll(Sort.by(sortParam));
+        } // IF-ELSE
     } // FINDALLARTICLES()
 
     @GetMapping("/articles/find/id/{articleId}")
@@ -83,7 +89,7 @@ public class ArticleController {
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Example<Article> myEx = Example.of(exampleArticle, myMatcher);
         myLogger.debug("EXAMPLE PROBE TYPE: " + myEx.getProbeType());
-        List<Article> articleOptional = articleRepository.findAll(myEx);
+        List<Article> articleOptional = articleRepository.findAll(myEx,yearMonthSort);
         if(articleOptional.isEmpty()){
             throw new ResourceNotFoundException("Found no matching articles: " + exampleArticleJSON);
         } // IF
