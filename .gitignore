@@ -4,6 +4,13 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+### KEYSTORE FILES
+*.jks
+*.key
+*.csr
+*.crt
+*.pem
+
 ### STS ###
 .apt_generated
 .classpath
