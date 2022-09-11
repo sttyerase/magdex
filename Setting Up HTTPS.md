@@ -1,14 +1,13 @@
 ## ESTABLISHING HTTPS FOR TESTING SPRING BOOT REST SERVICES:
 
-In order to establish safe, encrypted communication with your service, you will
-need to use HTTPS communication.  For development testing this may be accomplished
-using a self-signed certificate with a self-signed root certificate.  This self-signed
-root certificate must then be made available for any testing applications such as
-Postman.
+In order to establish safe, encrypted communication with a service, administrators must
+provide HTTPS communication for the service.  For development testing they may accomplish this
+using a self-signed certificate with a self-signed root certificate.  Testers must then import
+this root certificate into any clients used for testing, such as Postman or a client browser.
 
-In order to generate the self-signed root certificate, you will need to use the
+In order to generate the self-signed root certificate, the admin will need to use the
 **openssl** package.  This package comes with most recent Linux distributions or is
-easily available from the disbribution package manager.
+easily available via the disbribution package manager of the operating system.
 
 1. GENERATE THE SELF-SIGNED ROOT CERT USING OPENSSL: 
 ```
