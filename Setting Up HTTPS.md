@@ -27,11 +27,11 @@ easily available via the disbribution package manager of the operating system.
 ```
 4. IMPORT THE SIGNED CERTIFICATE INTO THE KEYSTORE FOR THE API SERVICE:
 ```
-   keytool -importcert -keystore mysite.jks -alias mysitekey -storepass password
+   keytool -importcert -keystore mysite.jks -alias mysitekey -storepass password -file mysite.crt
 ```
 5. VERIFY THE KEYSTORE BY LISTING THE CONTENTS:
 ```
-   keytool -list -keystore mysite.jks
+   keytool -list -v -keystore mysite.jks
 
 Your keystore contains 2 entries
 
