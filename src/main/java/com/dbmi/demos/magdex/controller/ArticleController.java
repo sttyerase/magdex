@@ -38,7 +38,7 @@ public class ArticleController {
         return ResponseEntity.ok(tableRows);
     } // GETROWCOUNT()
 
-    @GetMapping("/articles/find/all")
+    @GetMapping("/articles/find/all") // ALLOW FOR USER SPECIFIED SORT PARAMETERS
     public Iterable<Article> findAllArticles(@RequestParam(name = "sort", required = false) String sortParam) {
         if(sortParam == null || sortParam.isEmpty()) {
             return articleRepository.findAll(yearMonthSort);
