@@ -23,10 +23,10 @@ import java.util.*;
 public class ArticleController {
     private final ArticleRepository articleRepository;
     private final Logger myLogger = LoggerFactory.getLogger(this.getClass());
-    private final Sort yearMonthSort = Sort.by(Sort.Direction.DESC,"articleYear", "articleMonth");  // ESTABLISH DEFAULT SORT AS YEAR and MONTH DESCENDING
+    private final Sort yearMonthSort = Sort.by(Sort.Direction.DESC, "articleYear", "articleMonth");  // ESTABLISH DEFAULT SORT AS YEAR and MONTH DESCENDING
 
     @Autowired
-    ArticleController(ArticleRepository aRepo){
+    ArticleController(ArticleRepository aRepo) {
         super();
         this.articleRepository = aRepo;
     } // DEFAULT CONSTRUCTOR
@@ -34,13 +34,13 @@ public class ArticleController {
     // GET METHODS
     @GetMapping("/articles/rowcount")
     public ResponseEntity<Long> getRowCount() {
-        Long tableRows =  articleRepository.count();
+        Long tableRows = articleRepository.count();
         return ResponseEntity.ok(tableRows);
     } // GETROWCOUNT()
 
     @GetMapping("/articles/find/all") // ALLOW FOR USER SPECIFIED SORT PARAMETERS
     public Iterable<Article> findAllArticles(@RequestParam(name = "sort", required = false) String sortParam) {
-        if(sortParam == null || sortParam.isEmpty()) {
+        if (sortParam == null || sortParam.isEmpty()) {
             return articleRepository.findAll(yearMonthSort);
         } else {
             return articleRepository.findAll(Sort.by(sortParam));
@@ -62,7 +62,7 @@ public class ArticleController {
             throws ResourceNotFoundException {
         Article myArticle;
         Optional<Article> articleOptional = articleRepository.findByArticleTitle(articleTitle);
-        if(articleOptional.isPresent()){
+        if (articleOptional.isPresent()) {
             myArticle = articleOptional.get();
         } else {
             throw new ResourceNotFoundException("Unable to locate article: " + articleTitle);
@@ -70,27 +70,25 @@ public class ArticleController {
         return new ResponseEntity<>(myArticle, HttpStatus.OK);
     } // FINDARTICLESBYID(LONG)
 
-      // POST METHODS
+    // POST METHODS
     @PostMapping("/articles/find/like")
     public Iterable<Article> findArticlesLike(@Valid @RequestBody Article exampleArticle) // RETURNS A SINGLE ARTICLE MATCHING TITLE EXACTLY
             throws ResourceNotFoundException {
         String exampleArticleJSON = "";
         ObjectMapper mapper = new ObjectMapper();
-                try {
-                    exampleArticleJSON = mapper.writeValueAsString(exampleArticle);
-                } catch (JsonProcessingException jpe) {
-                    jpe.printStackTrace();
-                } // TRY-CATCH
-                ExampleMatcher myMatcher = ExampleMatcher.matching()
+        try {
+            exampleArticleJSON = mapper.writeValueAsString(exampleArticle);
+        } catch (JsonProcessingException jpe) {
+            jpe.printStackTrace();
+        } // TRY-CATCH
+        ExampleMatcher myMatcher = ExampleMatcher.matching()
                 .withIgnoreCase(true)
-                .withIgnorePaths("articleId")
-                .withIgnorePaths("articleMonth")
-                .withIgnorePaths("articleYear")
+                .withIgnorePaths("articleId", "articleMonth", "articleYear")
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Example<Article> myEx = Example.of(exampleArticle, myMatcher);
         myLogger.debug("EXAMPLE PROBE TYPE: " + myEx.getProbeType());
-        List<Article> articleOptional = articleRepository.findAll(myEx,yearMonthSort);
-        if(articleOptional.isEmpty()){
+        List<Article> articleOptional = articleRepository.findAll(myEx, yearMonthSort);
+        if (articleOptional.isEmpty()) {
             throw new ResourceNotFoundException("Found no matching articles: " + exampleArticleJSON);
         } // IF
         return articleOptional;
