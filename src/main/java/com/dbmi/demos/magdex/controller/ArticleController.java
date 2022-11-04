@@ -72,14 +72,14 @@ public class ArticleController {
 
     // POST METHODS
     @PostMapping("/articles/find/like")
-    public Iterable<Article> findArticlesLike(@Valid @RequestBody Article exampleArticle) // RETURNS A SINGLE ARTICLE MATCHING TITLE EXACTLY
-            throws ResourceNotFoundException {
-        String exampleArticleJSON = "";
+    public Iterable<Article> findArticlesLike(@Valid @RequestBody Article exampleArticle) // RETURNS LIST OF ARTICLES THAT MATCH STRINGS IN THE EXAMPLE
+            throws Exception {
+        String exampleArticleJSON ;
         ObjectMapper mapper = new ObjectMapper();
         try {
             exampleArticleJSON = mapper.writeValueAsString(exampleArticle);
         } catch (JsonProcessingException jpe) {
-            jpe.printStackTrace();
+            throw new Exception("EXCEPTION MAPPING ARTICLE CONTENTS TO JSON: " + jpe.getMessage());
         } // TRY-CATCH
         ExampleMatcher myMatcher = ExampleMatcher.matching()
                 .withIgnoreCase(true)
@@ -87,14 +87,13 @@ public class ArticleController {
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Example<Article> myEx = Example.of(exampleArticle, myMatcher);
         myLogger.debug("EXAMPLE PROBE TYPE: " + myEx.getProbeType());
-        List<Article> articleOptional = articleRepository.findAll(myEx, yearMonthSort);
-        if (articleOptional.isEmpty()) {
+        List<Article> theArticleList = articleRepository.findAll(myEx, yearMonthSort);
+        if (theArticleList.isEmpty()) {
             throw new ResourceNotFoundException("Found no matching articles: " + exampleArticleJSON);
         } // IF
-        return articleOptional;
+        return theArticleList;
     } // FINDARTICLESBYID(LONG)
 
-    // POST METHODS
     @PostMapping("/articles/new")
     public ResponseEntity<Article> createArticle(@Valid @RequestBody Article article) {
         return new ResponseEntity<>(articleRepository.save(article), HttpStatus.OK);
