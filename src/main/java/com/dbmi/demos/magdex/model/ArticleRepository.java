@@ -9,3 +9,5 @@ import java.util.Optional;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     Optional<Article> findByArticleTitle(String articleTitle);
 } // INTERFACE
+
+// JPAREPOSITORY EXTENDS QUERYBYEXAMPLEEXECUTOR
