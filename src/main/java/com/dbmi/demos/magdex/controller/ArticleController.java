@@ -23,7 +23,8 @@ import java.util.*;
 public class ArticleController {
     private final ArticleRepository articleRepository;
     private final Logger myLogger = LoggerFactory.getLogger(this.getClass());
-    private final Sort yearMonthSort = Sort.by(Sort.Direction.DESC, "articleYear", "articleMonth");  // ESTABLISH DEFAULT SORT AS YEAR and MONTH DESCENDING
+    // ESTABLISH DEFAULT SORT AS YEAR and MONTH DESCENDING, ID ASCENDING
+    private final Sort yearMonthSort = Sort.by(Sort.Order.desc("articleYear"),Sort.Order.desc("articleMonth"),Sort.Order.asc("articleId"));
 
     @Autowired
     ArticleController(ArticleRepository aRepo) {
@@ -71,10 +72,31 @@ public class ArticleController {
     } // FINDARTICLESBYID(LONG)
 
     // POST METHODS
+    @PostMapping("/articles/find/yearandmonth")
+    public Iterable<Article> findArticlesMonthYear(@Valid @RequestBody Article exampleArticle) // RETURNS LIST OF ARTICLES THAT MATCH STRINGS IN THE EXAMPLE
+            throws Exception {
+        String exampleArticleJSON;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            exampleArticleJSON = mapper.writeValueAsString(exampleArticle);
+        } catch (JsonProcessingException jpe) {
+            throw new Exception("EXCEPTION MAPPING ARTICLE CONTENTS TO JSON: " + jpe.getMessage());
+        } // TRY-CATCH
+        ExampleMatcher myMatcher = ExampleMatcher.matching()
+                .withIgnorePaths("articleId", "articleTitle", "articleAuthor", "articleCategory", "articleSynopsis", "articleKeywords");
+        if (exampleArticle.getArticleMonth() == 0) myMatcher = myMatcher.withIgnorePaths("articleMonth");
+        Example<Article> myEx = Example.of(exampleArticle, myMatcher);
+        List<Article> theArticleList = articleRepository.findAll(myEx, yearMonthSort);
+        if (theArticleList.isEmpty()) {
+            throw new ResourceNotFoundException("Found no matching articles: " + exampleArticleJSON);
+        } // IF
+        return theArticleList;
+    } // FINDARTICLESBYID(LONG)
+
     @PostMapping("/articles/find/like")
     public Iterable<Article> findArticlesLike(@Valid @RequestBody Article exampleArticle) // RETURNS LIST OF ARTICLES THAT MATCH STRINGS IN THE EXAMPLE
             throws Exception {
-        String exampleArticleJSON ;
+        String exampleArticleJSON;
         ObjectMapper mapper = new ObjectMapper();
         try {
             exampleArticleJSON = mapper.writeValueAsString(exampleArticle);
@@ -86,7 +108,6 @@ public class ArticleController {
                 .withIgnorePaths("articleId", "articleMonth", "articleYear")
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
         Example<Article> myEx = Example.of(exampleArticle, myMatcher);
-        myLogger.debug("EXAMPLE PROBE TYPE: " + myEx.getProbeType());
         List<Article> theArticleList = articleRepository.findAll(myEx, yearMonthSort);
         if (theArticleList.isEmpty()) {
             throw new ResourceNotFoundException("Found no matching articles: " + exampleArticleJSON);
