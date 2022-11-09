@@ -24,7 +24,7 @@ public class ArticleController {
     private final ArticleRepository articleRepository;
     private final Logger myLogger = LoggerFactory.getLogger(this.getClass());
     // ESTABLISH DEFAULT SORT AS YEAR and MONTH DESCENDING, ID ASCENDING
-    private final Sort yearMonthSort = Sort.by(Sort.Order.desc("articleYear"),Sort.Order.desc("articleMonth"),Sort.Order.asc("articleId"));
+    private final Sort yearMonthSort = Sort.by(Sort.Order.desc("articleYear"), Sort.Order.desc("articleMonth"), Sort.Order.asc("articleId"));
 
     @Autowired
     ArticleController(ArticleRepository aRepo) {
@@ -32,14 +32,14 @@ public class ArticleController {
         this.articleRepository = aRepo;
     } // DEFAULT CONSTRUCTOR
 
-    // GET METHODS
-    @GetMapping("/articles/rowcount")
+    // POST METHODS
+    @PostMapping("/articles/rowcount")
     public ResponseEntity<Long> getRowCount() {
         Long tableRows = articleRepository.count();
         return ResponseEntity.ok(tableRows);
     } // GETROWCOUNT()
 
-    @GetMapping("/articles/find/all") // ALLOW FOR USER SPECIFIED SORT PARAMETERS
+    @PostMapping("/articles/find/all") // ALLOW FOR USER SPECIFIED SORT PARAMETERS
     public Iterable<Article> findAllArticles(@RequestParam(name = "sort", required = false) String sortParam) {
         if (sortParam == null || sortParam.isEmpty()) {
             return articleRepository.findAll(yearMonthSort);
@@ -48,30 +48,20 @@ public class ArticleController {
         } // IF-ELSE
     } // FINDALLARTICLES()
 
-    @GetMapping("/articles/find/id/{articleId}")
-    public ResponseEntity<Article> findArticleById(@PathVariable(value = "articleId") Long articleId)
+    // POST METHODS
+    @PostMapping("/articles/find/id")
+    public Iterable<Article> findArticleById(@Valid @RequestBody Article exampleArticle)
             throws ResourceNotFoundException {
         Article myArticle =
                 articleRepository
-                        .findById(articleId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Article information not found for id: " + articleId));
-        return new ResponseEntity<>(myArticle, HttpStatus.OK);
+                        .findById(exampleArticle.getArticleId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Article information not found for id: " + exampleArticle.getArticleId()));
+
+        List<Article> theArticleList = new LinkedList<>();
+        theArticleList.add(myArticle);
+        return theArticleList;
     } // FINDARTICLESBYID(LONG)
 
-    @GetMapping("/articles/find/title/{articleTitle}")
-    public ResponseEntity<Article> findArticleByTitle(@PathVariable(value = "articleTitle") String articleTitle) // RETURNS A SINGLE ARTICLE MATCHING TITLE EXACTLY
-            throws ResourceNotFoundException {
-        Article myArticle;
-        Optional<Article> articleOptional = articleRepository.findByArticleTitle(articleTitle);
-        if (articleOptional.isPresent()) {
-            myArticle = articleOptional.get();
-        } else {
-            throw new ResourceNotFoundException("Unable to locate article: " + articleTitle);
-        } // IF-ELSE
-        return new ResponseEntity<>(myArticle, HttpStatus.OK);
-    } // FINDARTICLESBYID(LONG)
-
-    // POST METHODS
     @PostMapping("/articles/find/yearandmonth")
     public Iterable<Article> findArticlesMonthYear(@Valid @RequestBody Article exampleArticle) // RETURNS LIST OF ARTICLES THAT MATCH STRINGS IN THE EXAMPLE
             throws Exception {
