@@ -4,8 +4,8 @@ import com.dbmi.demos.magdex.model.ArticleRepository;
 import com.dbmi.demos.magdex.model.Article;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.*;
 
 @CrossOrigin(origins = "*")
@@ -22,7 +22,7 @@ import java.util.*;
 @RequestMapping("/magdex")
 public class ArticleController {
     private final ArticleRepository articleRepository;
-    private final Logger myLogger = LoggerFactory.getLogger(this.getClass());
+    // private final Logger myLogger = LoggerFactory.getLogger(this.getClass());
     // ESTABLISH DEFAULT SORT AS YEAR and MONTH DESCENDING, ID ASCENDING
     private final Sort yearMonthSort = Sort.by(Sort.Order.desc("articleYear"), Sort.Order.desc("articleMonth"), Sort.Order.asc("articleId"));
 

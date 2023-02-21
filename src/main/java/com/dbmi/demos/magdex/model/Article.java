@@ -1,6 +1,6 @@
 package com.dbmi.demos.magdex.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "articles")
