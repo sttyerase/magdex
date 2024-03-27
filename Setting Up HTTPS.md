@@ -25,8 +25,9 @@ easily available via the disbribution package manager of the operating system.
 ```
    openssl x509 -req -in mysite.csr -CA  myroot.crt -CAkey myroot.key -CAcreateserial -out mysite.crt -days 365 -sha256  ## SIGN API CERT REQ W/ROOT KEY
 ```
-4. IMPORT THE SIGNED CERTIFICATE INTO THE KEYSTORE FOR THE API SERVICE:
+4. IMPORT THE SIGNED CERTIFICATE CHAIN INTO THE KEYSTORE FOR THE API SERVICE:
 ```
+   keytool -importcert -keystore mysite.jks -alias myrootkey -storepass password -file myroot.crt
    keytool -importcert -keystore mysite.jks -alias mysitekey -storepass password -file mysite.crt
 ```
 5. VERIFY THE KEYSTORE BY LISTING THE CONTENTS:
