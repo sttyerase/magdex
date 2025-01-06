@@ -5,14 +5,16 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.2</version>
+        <version>3.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.dbmi</groupId>
     <artifactId>magdex</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>seeds</name>
-    <description>demonstration project for a magazine index repository</description>
+    <description>
+        A demonstration REST API project for a magazine index repository using spring-boot.
+    </description>
 
     <properties>
         <java.version>17</java.version>
@@ -34,9 +36,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.30</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.1.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
