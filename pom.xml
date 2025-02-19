@@ -11,7 +11,7 @@
     <groupId>com.dbmi</groupId>
     <artifactId>magdex</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>seeds</name>
+    <name>magdex</name>
     <description>
         A demonstration REST API project for a magazine index repository using spring-boot.
     </description>
